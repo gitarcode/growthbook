@@ -214,8 +214,7 @@ const navlinks: SidebarLinkProps[] = [
         filter: ({ permissions, permissionsUtils, gb }) =>
           permissions.check("manageFeatures", "") &&
           permissions.check("manageEnvironments" as GlobalPermission) &&
-          permissionsUtils.canCreateProjects() &&
-          !!gb?.isOn("import-from-x"),
+          permissionsUtils.canCreateProjects(),
       },
       {
         name: "Billing",
