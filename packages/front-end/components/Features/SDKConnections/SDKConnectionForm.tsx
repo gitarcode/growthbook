@@ -3,7 +3,6 @@ import {
   SDKConnectionInterface,
 } from "back-end/types/sdk-connection";
 import { useForm } from "react-hook-form";
-import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useGrowthBook } from "@growthbook/growthbook-react";
 import {
@@ -1042,7 +1041,7 @@ export default function SDKConnectionForm({
           </>
         )}
 
-        {isCloud() && gb?.isOn("proxy-cloud") && (
+        {isCloud() && (
           <div
             className="d-flex mt-3 mb-3 align-top"
             style={{ justifyContent: "space-between" }}
