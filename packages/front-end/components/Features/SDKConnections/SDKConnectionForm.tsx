@@ -1,6 +1,6 @@
 import {
   CreateSDKConnectionParams,
-  SDKConnectionInterface,
+  SDKConnectionInterface
 } from "back-end/types/sdk-connection";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/router";
@@ -9,7 +9,7 @@ import {
   FaCheck,
   FaExclamationCircle,
   FaExclamationTriangle,
-  FaInfoCircle,
+  FaInfoCircle
 } from "react-icons/fa";
 import clsx from "clsx";
 import {
@@ -18,11 +18,11 @@ import {
   getLatestSDKVersion,
   getSDKCapabilityVersion,
   getSDKVersions,
-  isSDKOutdated,
+  isSDKOutdated
 } from "shared/sdk-versioning";
 import {
   filterProjectsByEnvironment,
-  getDisallowedProjects,
+  getDisallowedProjects
 } from "shared/util";
 import { useDefinitions } from "@/services/DefinitionsContext";
 import { useEnvironments } from "@/services/features";
@@ -62,7 +62,7 @@ export default function SDKConnectionForm({
   close,
   mutate,
   autoCloseOnSubmit = true,
-  cta = "Save",
+  cta = "Save"
 }: {
   initialValue?: Partial<SDKConnectionInterface>;
   edit: boolean;
@@ -116,8 +116,8 @@ export default function SDKConnectionForm({
         "projects" in initialValue
           ? initialValue.projects
           : project
-          ? [project]
-          : [],
+            ? [project]
+            : [],
       encryptPayload: initialValue.encryptPayload ?? false,
       hashSecureAttributes:
         initialValue.hashSecureAttributes ?? hasSecureAttributesFeature,
@@ -128,8 +128,8 @@ export default function SDKConnectionForm({
         initialValue.includeRedirectExperiments ?? false,
       proxyEnabled: initialValue.proxy?.enabled ?? false,
       proxyHost: initialValue.proxy?.host ?? "",
-      remoteEvalEnabled: initialValue.remoteEvalEnabled ?? false,
-    },
+      remoteEvalEnabled: initialValue.remoteEvalEnabled ?? false
+    }
   });
 
   const usingLatestVersion = !isSDKOutdated(
@@ -151,14 +151,14 @@ export default function SDKConnectionForm({
     languageEnvironments.size === 0
       ? "backend" // show the least amount of configuration options if nothing is set
       : languageEnvironments.size === 1
-      ? [...languageEnvironments][0]
-      : languageEnvironments.has("frontend")
-      ? "frontend"
-      : languageEnvironments.has("mobile")
-      ? "mobile"
-      : languageEnvironments.has("backend")
-      ? "backend"
-      : "hybrid";
+        ? [...languageEnvironments][0]
+        : languageEnvironments.has("frontend")
+          ? "frontend"
+          : languageEnvironments.has("mobile")
+            ? "mobile"
+            : languageEnvironments.has("backend")
+              ? "backend"
+              : "hybrid";
 
   const latestSdkCapabilities = getConnectionSDKCapabilities(
     form.getValues(),
@@ -169,12 +169,10 @@ export default function SDKConnectionForm({
     "min-ver-intersection"
   );
 
-  const enableRemoteEval =
-    hasRemoteEvaluationFeature;
+  const enableRemoteEval = hasRemoteEvaluationFeature;
 
-  const showVisualEditorSettings = latestSdkCapabilities.includes(
-    "visualEditor"
-  );
+  const showVisualEditorSettings =
+    latestSdkCapabilities.includes("visualEditor");
 
   const showRedirectSettings = latestSdkCapabilities.includes("redirects");
 
@@ -201,7 +199,7 @@ export default function SDKConnectionForm({
   const projectsOptions = [...filteredProjects, ...disallowedProjects].map(
     (p) => ({
       label: p.name,
-      value: p.id,
+      value: p.id
     })
   );
   const selectedValidProjects = selectedProjects?.filter((p) => {
@@ -214,7 +212,7 @@ export default function SDKConnectionForm({
       if (!name) {
         projectsOptions.push({
           label: "Invalid project",
-          value: p,
+          value: p
         });
       }
     });
@@ -275,7 +273,7 @@ export default function SDKConnectionForm({
     form,
     hasEncryptionFeature,
     hasSecureAttributesFeature,
-    enableRemoteEval,
+    enableRemoteEval
   ]);
 
   useEffect(() => {
@@ -312,13 +310,13 @@ export default function SDKConnectionForm({
 
         const body: Omit<CreateSDKConnectionParams, "organization"> = {
           ...value,
-          projects: value.projects || [],
+          projects: value.projects || []
         };
 
         if (edit) {
           await apiCall(`/sdk-connections/${initialValue.id}`, {
             method: "PUT",
-            body: JSON.stringify(body),
+            body: JSON.stringify(body)
           });
           mutate();
         } else {
@@ -326,7 +324,7 @@ export default function SDKConnectionForm({
             `/sdk-connections`,
             {
               method: "POST",
-              body: JSON.stringify(body),
+              body: JSON.stringify(body)
             }
           );
           track("Create SDK Connection", {
@@ -335,7 +333,7 @@ export default function SDKConnectionForm({
             encryptPayload: value.encryptPayload,
             hashSecureAttributes: value.hashSecureAttributes,
             remoteEvalEnabled: value.remoteEvalEnabled,
-            proxyEnabled: value.proxyEnabled,
+            proxyEnabled: value.proxyEnabled
           });
           mutate();
           if (autoCloseOnSubmit) {
@@ -380,9 +378,9 @@ export default function SDKConnectionForm({
                       placeholder="0.0.0"
                       autoComplete="off"
                       sort={false}
-                      options={getSDKVersions(
-                        form.watch("languages")[0]
-                      ).map((ver) => ({ label: ver, value: ver }))}
+                      options={getSDKVersions(form.watch("languages")[0]).map(
+                        (ver) => ({ label: ver, value: ver })
+                      )}
                       createable={true}
                       isClearable={false}
                       value={
@@ -519,7 +517,7 @@ export default function SDKConnectionForm({
                 buttonsWrapperClassName="sdk-security-button-wrapper mb-3"
                 buttonsClassName={(tab) =>
                   clsx("sdk-security-button text-center border rounded", {
-                    selected: tab === getSecurityTabState(form.getValues()),
+                    selected: tab === getSecurityTabState(form.getValues())
                   })
                 }
                 tabContentsClassName={(tab) =>
@@ -867,38 +865,38 @@ export default function SDKConnectionForm({
                         </label>
                         <div className="row">
                           <div className="col d-flex align-items-center">
-                            {(
-                            <>
-                              <Toggle
-                                id="remote-evaluation"
-                                value={form.watch("remoteEvalEnabled")}
-                                setValue={(val) =>
-                                  form.setValue("remoteEvalEnabled", val)
-                                }
-                                disabled={
-                                  !hasRemoteEvaluationFeature ||
-                                  !latestSdkCapabilities.includes(
-                                    "remoteEval"
-                                  )
-                                }
-                              />
-                              {isCloud() ? (
-                                <div className="alert alert-info mb-0 ml-3 py-1 px-2">
-                                  <FaExclamationCircle className="mr-1" />
-                                  Cloud customers must self-host a remote
-                                  evaluation service such as{" "}
-                                  <a
-                                    target="_blank"
-                                    href="https://github.com/growthbook/growthbook-proxy"
-                                    rel="noreferrer"
-                                  >
-                                    GrowthBook Proxy
-                                  </a>{" "}
-                                  or a CDN edge worker.
-                                </div>
-                              ) : null}
-                            </>
-                          )}
+                            {
+                              <>
+                                <Toggle
+                                  id="remote-evaluation"
+                                  value={form.watch("remoteEvalEnabled")}
+                                  setValue={(val) =>
+                                    form.setValue("remoteEvalEnabled", val)
+                                  }
+                                  disabled={
+                                    !hasRemoteEvaluationFeature ||
+                                    !latestSdkCapabilities.includes(
+                                      "remoteEval"
+                                    )
+                                  }
+                                />
+                                {isCloud() ? (
+                                  <div className="alert alert-info mb-0 ml-3 py-1 px-2">
+                                    <FaExclamationCircle className="mr-1" />
+                                    Cloud customers must self-host a remote
+                                    evaluation service such as{" "}
+                                    <a
+                                      target="_blank"
+                                      href="https://github.com/growthbook/growthbook-proxy"
+                                      rel="noreferrer"
+                                    >
+                                      GrowthBook Proxy
+                                    </a>{" "}
+                                    or a CDN edge worker.
+                                  </div>
+                                ) : null}
+                              </>
+                            }
                           </div>
                         </div>
                       </div>
