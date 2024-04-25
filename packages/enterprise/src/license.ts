@@ -22,7 +22,7 @@ const accountPlans: Set<AccountPlan> = new Set([
   "starter",
   "pro",
   "pro_sso",
-  "enterprise",
+  "enterprise"
 ]);
 
 export type CommercialFeature =
@@ -155,7 +155,7 @@ export const accountFeatures: CommercialFeaturesMap = {
     "prerequisites",
     "redirects",
     "multiple-sdk-webhooks",
-    "quantile-metrics",
+    "quantile-metrics"
   ]),
   pro_sso: new Set<CommercialFeature>([
     "sso",
@@ -176,7 +176,7 @@ export const accountFeatures: CommercialFeaturesMap = {
     "prerequisites",
     "redirects",
     "multiple-sdk-webhooks",
-    "quantile-metrics",
+    "quantile-metrics"
   ]),
   enterprise: new Set<CommercialFeature>([
     "scim",
@@ -208,8 +208,8 @@ export const accountFeatures: CommercialFeaturesMap = {
     "prerequisite-targeting",
     "redirects",
     "multiple-sdk-webhooks",
-    "quantile-metrics",
-  ]),
+    "quantile-metrics"
+  ])
 };
 
 type MinimalOrganization = {
@@ -305,7 +305,7 @@ function getVerifiedLicenseData(key: string): Partial<LicenseInterface> {
     dateCreated: decodedLicense.iat,
     dateExpires: decodedLicense.exp,
     isTrial: decodedLicense.trial,
-    plan: decodedLicense.plan,
+    plan: decodedLicense.plan
   };
 
   // If the public key failed to load, just assume the license is valid
@@ -316,7 +316,7 @@ function getVerifiedLicenseData(key: string): Partial<LicenseInterface> {
     license,
     {
       key: publicKey,
-      padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
+      padding: crypto.constants.RSA_PKCS1_PSS_PADDING
     },
     signature
   );
@@ -353,7 +353,7 @@ function verifyLicenseInterface(license: LicenseInterface) {
     "remoteDowngrade",
     "isTrial",
     "organizationId",
-    "plan",
+    "plan"
   ]);
   const data = Object.fromEntries(sortBy(Object.entries(strippedLicense)));
   const dataBuffer = Buffer.from(JSON.stringify(data));
@@ -366,7 +366,7 @@ function verifyLicenseInterface(license: LicenseInterface) {
     dataBuffer,
     {
       key: publicKey,
-      padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
+      padding: crypto.constants.RSA_PKCS1_PSS_PADDING
     },
     signature
   );
@@ -401,10 +401,10 @@ async function callLicenseServer(url: string, body: string, method = "POST") {
   const options = {
     method: method,
     headers: {
-      "Content-Type": "application/json",
+      "Content-Type": "application/json"
     },
     body,
-    ...agentOptions,
+    ...agentOptions
   };
 
   let serverResult;
@@ -445,7 +445,7 @@ export async function postVerifyEmailToLicenseServer(
   return callLicenseServer(
     url,
     JSON.stringify({
-      emailVerificationToken,
+      emailVerificationToken
     })
   );
 }
@@ -467,7 +467,7 @@ export async function postNewProTrialSubscriptionToLicenseServer(
       email,
       seats,
       appOrigin: process.env.APP_ORIGIN,
-      cloudSecret: process.env.CLOUD_SECRET,
+      cloudSecret: process.env.CLOUD_SECRET
     })
   );
 }
@@ -491,7 +491,7 @@ export async function postNewProSubscriptionToLicenseServer(
       ownerEmail,
       name,
       seats,
-      returnUrl,
+      returnUrl
     })
   );
 }
@@ -503,7 +503,7 @@ export async function postNewSubscriptionSuccessToLicenseServer(
   return await callLicenseServer(
     url,
     JSON.stringify({
-      checkoutSessionId,
+      checkoutSessionId
     })
   );
 }
@@ -516,7 +516,7 @@ export async function postCreateBillingSessionToLicenseServer(
     url,
     JSON.stringify({
       appOrigin: process.env.APP_ORIGIN,
-      licenseId,
+      licenseId
     })
   );
 }
@@ -530,7 +530,7 @@ export async function postSubscriptionUpdateToLicenseServer(
     url,
     JSON.stringify({
       licenseId,
-      seats,
+      seats
     })
   );
 
@@ -561,7 +561,7 @@ export async function postCreateTrialEnterpriseLicenseToLicenseServer(
       companyName,
       context,
       appOrigin: process.env.APP_ORIGIN,
-      cloudSecret: process.env.CLOUD_SECRET,
+      cloudSecret: process.env.CLOUD_SECRET
     })
   );
 }
@@ -574,7 +574,7 @@ export async function postResendEmailVerificationEmailToLicenseServer(
     url,
     JSON.stringify({
       organizationId,
-      appOrigin: process.env.APP_ORIGIN,
+      appOrigin: process.env.APP_ORIGIN
     })
   );
 }
@@ -611,7 +611,7 @@ async function getLicenseDataFromServer(
     url,
     JSON.stringify({
       userHashes: userLicenseCodes,
-      metaData,
+      metaData
     }),
     "PUT"
   );
@@ -647,7 +647,7 @@ async function updateLicenseFromServer(
       // We have fetched the cache, but it doesn't exist
       license = new LicenseModel({
         id: licenseKey,
-        firstFailedFetchDate: now,
+        firstFailedFetchDate: now
       });
     } else {
       // At this point we know the cache exists and can't be undefined, but TS doesn't, hence the !.
@@ -740,16 +740,17 @@ export async function licenseInit(
             license.usingMongoCache = true;
             if (new Date(mongoCache.dateUpdated) < oneDayAgo) {
               // But if it is older than a day update it in the background
-              backgroundUpdateLicenseFromServerForTests = updateLicenseFromServer(
-                key,
-                userLicenseCodes,
-                metaData,
-                mongoCache
-              ).catch((e) => {
-                logger.error(
-                  `Failed to update license ${key} in the background: ${e}`
-                );
-              });
+              backgroundUpdateLicenseFromServerForTests =
+                updateLicenseFromServer(
+                  key,
+                  userLicenseCodes,
+                  metaData,
+                  mongoCache
+                ).catch((e) => {
+                  logger.error(
+                    `Failed to update license ${key} in the background: ${e}`
+                  );
+                });
             }
           }
 
