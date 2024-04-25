@@ -196,8 +196,7 @@ const navlinks: SidebarLinkProps[] = [
         href: "/integrations/slack",
         path: /^integrations\/slack/,
         filter: ({ permissions, gb }) =>
-          permissions.check("manageIntegrations") &&
-          !!gb?.isOn("slack-integration"),
+          permissions.check("manageIntegrations"),
       },
       {
         name: "GitHub",
