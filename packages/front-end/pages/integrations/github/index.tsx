@@ -14,7 +14,7 @@ const GitHubIntegrationPage: NextPage = () => {
   const code = router.query.code as string;
   const growthbook = useGrowthBook<AppFeatures>();
 
-  if (!growthbook || growthbook.isOff("github-integration")) {
+  if (!growthbook) {
     router.replace("/404");
   }
 
