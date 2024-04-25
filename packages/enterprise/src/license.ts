@@ -224,7 +224,7 @@ type MinimalOrganization = {
 };
 
 export function isActiveSubscriptionStatus(
-  status?: Stripe.Subscription.Status
+  status?: Stripe.Subscription.Status,
 ) {
   return ["active", "trialing", "past_due"].includes(status || "");
 }
@@ -249,14 +249,14 @@ export function getAccountPlan(org: MinimalOrganization): AccountPlan {
 
 function planHasPremiumFeature(
   plan: AccountPlan,
-  feature: CommercialFeature
+  feature: CommercialFeature,
 ): boolean {
   return accountFeatures[plan].has(feature);
 }
 
 export function orgHasPremiumFeature(
   org: MinimalOrganization,
-  feature: CommercialFeature
+  feature: CommercialFeature,
 ): boolean {
   return planHasPremiumFeature(getEffectiveAccountPlan(org), feature);
 }
@@ -264,12 +264,12 @@ export function orgHasPremiumFeature(
 function getPublicKey(): Buffer {
   try {
     const data = fs.readFileSync(
-      path.join(__dirname, "..", "license_public_key.pem")
+      path.join(__dirname, "..", "license_public_key.pem"),
     );
     return data;
   } catch (err) {
     logger.error(
-      "Failed to find Growthbook public key file for license verification"
+      "Failed to find Growthbook public key file for license verification",
     );
     throw err;
   }
@@ -318,7 +318,7 @@ function getVerifiedLicenseData(key: string): Partial<LicenseInterface> {
       key: publicKey,
       padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
     },
-    signature
+    signature,
   );
 
   // License key signature is invalid, don't use it
@@ -368,7 +368,7 @@ function verifyLicenseInterface(license: LicenseInterface) {
       key: publicKey,
       padding: crypto.constants.RSA_PKCS1_PSS_PADDING,
     },
-    signature
+    signature,
   );
 
   // License key signature is invalid, don't use it
@@ -412,11 +412,11 @@ async function callLicenseServer(url: string, body: string, method = "POST") {
     serverResult = await fetch(url, options);
   } catch (e) {
     logger.error(
-      "Could not connect to license server. Make sure to whitelist 75.2.109.47."
+      "Could not connect to license server. Make sure to whitelist 75.2.109.47.",
     );
     throw new LicenseServerError(
       "Could not connect to license server. Make sure to whitelist 75.2.109.47.",
-      500
+      500,
     );
   }
 
@@ -431,7 +431,7 @@ async function callLicenseServer(url: string, body: string, method = "POST") {
     logger.error(`License Server error (${serverResult.status}): ${errorText}`);
     throw new LicenseServerError(
       `License server errored with: ${errorText}`,
-      serverResult.status
+      serverResult.status,
     );
   }
 
@@ -439,14 +439,14 @@ async function callLicenseServer(url: string, body: string, method = "POST") {
 }
 
 export async function postVerifyEmailToLicenseServer(
-  emailVerificationToken: string
+  emailVerificationToken: string,
 ) {
   const url = `${LICENSE_SERVER_URL}license/verify-email`;
   return callLicenseServer(
     url,
     JSON.stringify({
       emailVerificationToken,
-    })
+    }),
   );
 }
 
@@ -455,7 +455,7 @@ export async function postNewProTrialSubscriptionToLicenseServer(
   companyName: string,
   name: string,
   email: string,
-  seats: number
+  seats: number,
 ) {
   const url = `${LICENSE_SERVER_URL}subscription/new-pro-trial`;
   return callLicenseServer(
@@ -468,7 +468,7 @@ export async function postNewProTrialSubscriptionToLicenseServer(
       seats,
       appOrigin: process.env.APP_ORIGIN,
       cloudSecret: process.env.CLOUD_SECRET,
-    })
+    }),
   );
 }
 
@@ -478,7 +478,7 @@ export async function postNewProSubscriptionToLicenseServer(
   ownerEmail: string,
   name: string,
   seats: number,
-  returnUrl: string
+  returnUrl: string,
 ) {
   const url = `${LICENSE_SERVER_URL}subscription/new`;
   return callLicenseServer(
@@ -492,24 +492,24 @@ export async function postNewProSubscriptionToLicenseServer(
       name,
       seats,
       returnUrl,
-    })
+    }),
   );
 }
 
 export async function postNewSubscriptionSuccessToLicenseServer(
-  checkoutSessionId: string
+  checkoutSessionId: string,
 ): Promise<LicenseInterface> {
   const url = `${LICENSE_SERVER_URL}subscription/success`;
   return await callLicenseServer(
     url,
     JSON.stringify({
       checkoutSessionId,
-    })
+    }),
   );
 }
 
 export async function postCreateBillingSessionToLicenseServer(
-  licenseId: string
+  licenseId: string,
 ): Promise<{ url: string; status: number }> {
   const url = `${LICENSE_SERVER_URL}subscription/manage`;
   return await callLicenseServer(
@@ -517,13 +517,13 @@ export async function postCreateBillingSessionToLicenseServer(
     JSON.stringify({
       appOrigin: process.env.APP_ORIGIN,
       licenseId,
-    })
+    }),
   );
 }
 
 export async function postSubscriptionUpdateToLicenseServer(
   licenseId: string,
-  seats: number
+  seats: number,
 ): Promise<LicenseInterface> {
   const url = `${LICENSE_SERVER_URL}subscription/update`;
   const license = await callLicenseServer(
@@ -531,7 +531,7 @@ export async function postSubscriptionUpdateToLicenseServer(
     JSON.stringify({
       licenseId,
       seats,
-    })
+    }),
   );
 
   setAndVerifyServerLicenseData(license);
@@ -549,7 +549,7 @@ export async function postCreateTrialEnterpriseLicenseToLicenseServer(
     currentPlan: AccountPlan;
     currentBuild: string;
     ctaSource: string;
-  }
+  },
 ) {
   const url = `${LICENSE_SERVER_URL}license/new-enterprise-trial`;
   return await callLicenseServer(
@@ -562,12 +562,12 @@ export async function postCreateTrialEnterpriseLicenseToLicenseServer(
       context,
       appOrigin: process.env.APP_ORIGIN,
       cloudSecret: process.env.CLOUD_SECRET,
-    })
+    }),
   );
 }
 
 export async function postResendEmailVerificationEmailToLicenseServer(
-  organizationId: string
+  organizationId: string,
 ) {
   const url = `${LICENSE_SERVER_URL}license/resend-license-email`;
   return await callLicenseServer(
@@ -575,7 +575,7 @@ export async function postResendEmailVerificationEmailToLicenseServer(
     JSON.stringify({
       organizationId,
       appOrigin: process.env.APP_ORIGIN,
-    })
+    }),
   );
 }
 
@@ -584,7 +584,7 @@ async function createOrUpdateLicenseMongoCache(license: LicenseInterface) {
   await LicenseModel.findOneAndUpdate(
     { id: license.id },
     { $set: license },
-    { upsert: true }
+    { upsert: true },
   );
 }
 
@@ -602,7 +602,7 @@ export function setAndVerifyServerLicenseData(license: LicenseInterface) {
 async function getLicenseDataFromServer(
   licenseId: string,
   userLicenseCodes: string[],
-  metaData: LicenseMetaData
+  metaData: LicenseMetaData,
 ): Promise<LicenseInterface> {
   logger.info("Getting license data from server for " + licenseId);
   const url = `${LICENSE_SERVER_URL}license/${licenseId}/check`;
@@ -613,7 +613,7 @@ async function getLicenseDataFromServer(
       userHashes: userLicenseCodes,
       metaData,
     }),
-    "PUT"
+    "PUT",
   );
 
   return license;
@@ -623,14 +623,14 @@ async function updateLicenseFromServer(
   licenseKey: string,
   userLicenseCodes: string[],
   metaData: LicenseMetaData,
-  mongoCache?: LicenseDocument | null
+  mongoCache?: LicenseDocument | null,
 ) {
   let license: LicenseInterface;
   try {
     license = await getLicenseDataFromServer(
       licenseKey,
       userLicenseCodes,
-      metaData
+      metaData,
     );
     createOrUpdateLicenseMongoCache(license).catch((e) => {
       logger.error(`Error creating mongo cache: ${e}`);
@@ -689,7 +689,7 @@ export async function licenseInit(
   licenseKey?: string,
   userLicenseCodes?: string[],
   metaData?: LicenseMetaData,
-  forceRefresh = false
+  forceRefresh = false,
 ): Promise<Partial<LicenseInterface> | undefined> {
   const key = licenseKey || process.env.LICENSE_KEY || null;
 
@@ -716,7 +716,7 @@ export async function licenseInit(
         if (!isAirGappedLicenseKey(key)) {
           if (!userLicenseCodes || !metaData) {
             throw new Error(
-              "Missing userLicenseCodes or metaData for license key"
+              "Missing userLicenseCodes or metaData for license key",
             );
           }
 
@@ -732,7 +732,7 @@ export async function licenseInit(
               key,
               userLicenseCodes,
               metaData,
-              mongoCache
+              mongoCache,
             );
           } else {
             // Use the cache
@@ -740,16 +740,17 @@ export async function licenseInit(
             license.usingMongoCache = true;
             if (new Date(mongoCache.dateUpdated) < oneDayAgo) {
               // But if it is older than a day update it in the background
-              backgroundUpdateLicenseFromServerForTests = updateLicenseFromServer(
-                key,
-                userLicenseCodes,
-                metaData,
-                mongoCache
-              ).catch((e) => {
-                logger.error(
-                  `Failed to update license ${key} in the background: ${e}`
-                );
-              });
+              backgroundUpdateLicenseFromServerForTests =
+                updateLicenseFromServer(
+                  key,
+                  userLicenseCodes,
+                  metaData,
+                  mongoCache,
+                ).catch((e) => {
+                  logger.error(
+                    `Failed to update license ${key} in the background: ${e}`,
+                  );
+                });
             }
           }
 
@@ -782,7 +783,7 @@ export async function licenseInit(
       process.env.LICENSE_KEY,
       userLicenseCodes,
       metaData,
-      forceRefresh
+      forceRefresh,
     );
     if (result) {
       keyToLicenseData[key] = result;
@@ -827,7 +828,7 @@ export function getLicenseError(org: MinimalOrganization): string {
     const dateUpdated = new Date(licenseData.dateUpdated);
 
     let cachedDataGoodUntil = new Date(
-      dateUpdated.getTime() + 7 * 24 * 60 * 60 * 1000
+      dateUpdated.getTime() + 7 * 24 * 60 * 60 * 1000,
     );
     if (
       licenseData.firstFailedFetchDate &&
@@ -835,7 +836,7 @@ export function getLicenseError(org: MinimalOrganization): string {
     ) {
       // As long as the first failed fetch date is within the last week, we allow the cache to be used for seven days from the first failed fetch
       cachedDataGoodUntil = new Date(
-        licenseData.firstFailedFetchDate.getTime() + 7 * 24 * 60 * 60 * 1000
+        licenseData.firstFailedFetchDate.getTime() + 7 * 24 * 60 * 60 * 1000,
       );
     }
 
@@ -852,7 +853,7 @@ export function getLicenseError(org: MinimalOrganization): string {
     // Trying to use SSO, but the plan doesn't support it
     // We throw the error here, otherwise they would still be able to use SSO on free plans with only a warning.
     throw new Error(
-      "Your license does not support SSO. Either upgrade to enterprise or remove SSO_CONFIG environment variable."
+      "Your license does not support SSO. Either upgrade to enterprise or remove SSO_CONFIG environment variable.",
     );
   }
 
@@ -923,7 +924,7 @@ export function getEffectiveAccountPlan(org: MinimalOrganization): AccountPlan {
  * @returns {boolean} True if the license is expired, false otherwise.
  */
 function shouldLimitAccessDueToExpiredLicense(
-  licenseData: Partial<LicenseInterface>
+  licenseData: Partial<LicenseInterface>,
 ): boolean {
   // If licenseData is not available, consider it as not expired
   if (!licenseData) {
