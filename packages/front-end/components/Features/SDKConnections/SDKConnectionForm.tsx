@@ -3,7 +3,6 @@ import {
   SDKConnectionInterface,
 } from "back-end/types/sdk-connection";
 import { useForm } from "react-hook-form";
-import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { useGrowthBook } from "@growthbook/growthbook-react";
 import {
@@ -86,7 +85,6 @@ export default function SDKConnectionForm({
   const hasSecureAttributesFeature = hasCommercialFeature(
     "hash-secure-attributes"
   );
-  const hasRemoteEvaluationFeature = hasCommercialFeature("remote-evaluation");
 
   useEffect(() => {
     if (edit) return;
@@ -169,9 +167,6 @@ export default function SDKConnectionForm({
     form.getValues(),
     "min-ver-intersection"
   );
-
-  const enableRemoteEval =
-    hasRemoteEvaluationFeature && !!gb?.isOn("remote-evaluation");
 
   const showVisualEditorSettings = latestSdkCapabilities.includes(
     "visualEditor"
@@ -262,21 +257,15 @@ export default function SDKConnectionForm({
         form.setValue("includeExperimentNames", false);
       }
     } else if (selectedSecurityTab === "remote") {
-      if (!enableRemoteEval) {
-        form.setValue("remoteEvalEnabled", false);
-        return;
-      }
-      form.setValue("remoteEvalEnabled", true);
-      form.setValue("encryptPayload", false);
-      form.setValue("hashSecureAttributes", false);
-      form.setValue("includeExperimentNames", true);
+      form.setValue("remoteEvalEnabled", false);
+      return;
     }
   }, [
     selectedSecurityTab,
     form,
     hasEncryptionFeature,
     hasSecureAttributesFeature,
-    enableRemoteEval,
+    false,
   ]);
 
   useEffect(() => {
@@ -868,91 +857,26 @@ export default function SDKConnectionForm({
                         </label>
                         <div className="row">
                           <div className="col d-flex align-items-center">
-                            {gb?.isOn("remote-evaluation") ? (
-                              <>
-                                <Toggle
-                                  id="remote-evaluation"
-                                  value={form.watch("remoteEvalEnabled")}
-                                  setValue={(val) =>
-                                    form.setValue("remoteEvalEnabled", val)
-                                  }
-                                  disabled={
-                                    !hasRemoteEvaluationFeature ||
-                                    !latestSdkCapabilities.includes(
-                                      "remoteEval"
-                                    )
-                                  }
-                                />
-                                {isCloud() ? (
-                                  <div className="alert alert-info mb-0 ml-3 py-1 px-2">
-                                    <FaExclamationCircle className="mr-1" />
-                                    Cloud customers must self-host a remote
-                                    evaluation service such as{" "}
-                                    <a
-                                      target="_blank"
-                                      href="https://github.com/growthbook/growthbook-proxy"
-                                      rel="noreferrer"
-                                    >
-                                      GrowthBook Proxy
-                                    </a>{" "}
-                                    or a CDN edge worker.
-                                  </div>
-                                ) : null}
-                              </>
-                            ) : (
-                              <>
-                                <Toggle
-                                  id="remote-evaluation"
-                                  value={false}
-                                  disabled={true}
-                                  setValue={() => {
-                                    return;
-                                  }}
-                                />
-                                <span className="text-muted ml-2">
-                                  Coming soon
-                                </span>
-                              </>
-                            )}
+                            {(
+                            <>
+                              <Toggle
+                                id="remote-evaluation"
+                                value={false}
+                                disabled={true}
+                                setValue={() => {
+                                  return;
+                                }}
+                              />
+                              <span className="text-muted ml-2">
+                                Coming soon
+                              </span>
+                            </>
+                          )}
                           </div>
                         </div>
                       </div>
                     </div>
-                    {gb?.isOn("remote-evaluation") &&
-                    !currentSdkCapabilities.includes("remoteEval") ? (
-                      <div
-                        className="ml-2 mt-3 text-warning-orange"
-                        style={{ marginBottom: -5 }}
-                      >
-                        <FaExclamationCircle /> Remote evaluation may not be
-                        available in your current SDK.
-                        {languages.length === 1 && (
-                          <div className="mt-1 text-gray">
-                            {getSDKCapabilityVersion(
-                              languages[0],
-                              "remoteEval"
-                            ) ? (
-                              <>
-                                It was introduced in SDK version{" "}
-                                <code>
-                                  {getSDKCapabilityVersion(
-                                    languages[0],
-                                    "remoteEval"
-                                  )}
-                                </code>
-                                . The SDK version specified in this connection
-                                is{" "}
-                                <code>
-                                  {form.watch("sdkVersion") ||
-                                    getDefaultSDKVersion(languages[0])}
-                                </code>
-                                .
-                              </>
-                            ) : null}
-                          </div>
-                        )}
-                      </div>
-                    ) : null}
+                    {null}
                   </Tab>
                 )}
               </ControlledTabs>
