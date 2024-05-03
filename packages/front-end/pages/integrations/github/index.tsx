@@ -1,10 +1,8 @@
 import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { GithubIntegrationInterface } from "back-end/types/github";
-import { useGrowthBook } from "@growthbook/growthbook-react";
 import useApi from "@/hooks/useApi";
 import usePermissions from "@/hooks/usePermissions";
-import { AppFeatures } from "@/types/app-features";
 import GithubIntegrationConfig from "./GithubIntegrationConfig";
 import GithubIntegrationConnect from "./GithubIntegrationConnect";
 
@@ -12,11 +10,8 @@ const GitHubIntegrationPage: NextPage = () => {
   const permissions = usePermissions();
   const router = useRouter();
   const code = router.query.code as string;
-  const growthbook = useGrowthBook<AppFeatures>();
 
-  if (!growthbook || growthbook.isOff("github-integration")) {
-    router.replace("/404");
-  }
+  router.replace("/404");
 
   // TODO
   // - display faqs for quick troubleshooting
