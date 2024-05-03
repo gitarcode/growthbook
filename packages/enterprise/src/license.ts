@@ -42,7 +42,6 @@ export type CommercialFeature =
   | "hash-secure-attributes"
   | "livechat"
   | "json-validation"
-  | "remote-evaluation"
   | "multi-org"
   | "custom-launch-checklist"
   | "multi-metric-queries"
@@ -864,10 +863,6 @@ export function getLicenseError(org: MinimalOrganization): string {
   ) {
     // Trying to use IS_MULTI_ORG, but the plan doesn't support it
     return "No support for multi-org";
-  }
-
-  if (shouldLimitAccessDueToExpiredLicense(licenseData)) {
-    return "License expired";
   }
 
   if (!isAirGappedLicenseKey(key) && !licenseData.emailVerified) {
