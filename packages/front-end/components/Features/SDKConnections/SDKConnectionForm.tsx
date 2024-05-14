@@ -1041,46 +1041,6 @@ export default function SDKConnectionForm({
             </div>
           </>
         )}
-
-        {isCloud() && gb?.isOn("proxy-cloud") && (
-          <div
-            className="d-flex mt-3 mb-3 align-top"
-            style={{ justifyContent: "space-between" }}
-          >
-            <div className="">
-              <label htmlFor="sdk-connection-proxy-toggle">
-                Use GrowthBook Proxy
-              </label>
-              <div>
-                <Toggle
-                  id="sdk-connection-proxy-toggle"
-                  value={form.watch("proxyEnabled")}
-                  setValue={(val) => form.setValue("proxyEnabled", val)}
-                />
-              </div>
-            </div>
-
-            {form.watch("proxyEnabled") && (
-              <div className="ml-3 d-flex align-items-center">
-                <label
-                  className="mr-2 mt-3 pt-2"
-                  htmlFor="sdk-connection-proxyHost"
-                >
-                  Proxy Host URL
-                </label>
-                <Field
-                  id="sdk-connection-proxyHost"
-                  required
-                  placeholder="https://"
-                  type="url"
-                  containerClassName="mt-3"
-                  style={{ width: 400 }}
-                  {...form.register("proxyHost")}
-                />
-              </div>
-            )}
-          </div>
-        )}
       </div>
     </Modal>
   );
