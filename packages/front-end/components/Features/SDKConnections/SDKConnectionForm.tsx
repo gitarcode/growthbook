@@ -1042,7 +1042,7 @@ export default function SDKConnectionForm({
           </>
         )}
 
-        {isCloud() && gb?.isOn("proxy-cloud") && (
+        {isCloud() && (
           <div
             className="d-flex mt-3 mb-3 align-top"
             style={{ justifyContent: "space-between" }}
