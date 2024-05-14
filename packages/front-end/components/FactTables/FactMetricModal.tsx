@@ -455,7 +455,7 @@ export default function FactMetricModal({
     ignoreZeros: false,
   };
 
-  const quantileMetricFlag = growthbook && growthbook.isOn("quantile-metrics");
+  const quantileMetricFlag = growthbook;
   const quantileMetricsAvailableForDatasource =
     quantileMetricFlag && selectedDataSource?.properties?.hasQuantileTesting;
   const hasQuantileMetricCommercialFeature =
