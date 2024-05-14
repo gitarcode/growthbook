@@ -42,7 +42,6 @@ export type CommercialFeature =
   | "hash-secure-attributes"
   | "livechat"
   | "json-validation"
-  | "remote-evaluation"
   | "multi-org"
   | "custom-launch-checklist"
   | "multi-metric-queries"
