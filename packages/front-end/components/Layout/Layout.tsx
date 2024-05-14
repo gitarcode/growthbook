@@ -204,8 +204,7 @@ const navlinks: SidebarLinkProps[] = [
         href: "/integrations/github",
         path: /^integrations\/github/,
         filter: ({ permissions, gb }) =>
-          permissions.check("manageIntegrations") &&
-          !!gb?.isOn("github-integration"),
+          false,
       },
       {
         name: "Import your data",
