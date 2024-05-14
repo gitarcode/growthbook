@@ -1,7 +1,6 @@
 import { useForm } from "react-hook-form";
 import { FaTimes } from "react-icons/fa";
 import { ReactElement, useEffect, useState } from "react";
-import { useGrowthBook } from "@growthbook/growthbook-react";
 import {
   DEFAULT_FACT_METRIC_WINDOW,
   DEFAULT_LOSE_RISK_THRESHOLD,
@@ -44,7 +43,6 @@ import { MetricWindowSettingsForm } from "@/components/Metrics/MetricForm/Metric
 import { MetricCappingSettingsForm } from "@/components/Metrics/MetricForm/MetricCappingSettingsForm";
 import { OfficialBadge } from "@/components/Metrics/MetricName";
 import { MetricDelayHours } from "@/components/Metrics/MetricForm/MetricDelayHours";
-import { AppFeatures } from "@/types/app-features";
 
 export interface Props {
   close?: () => void;
@@ -316,7 +314,6 @@ export default function FactMetricModal({
   goBack,
   source,
 }: Props) {
-  const growthbook = useGrowthBook<AppFeatures>();
 
   const { metricDefaults } = useOrganizationMetricDefaults();
 
@@ -454,12 +451,6 @@ export default function FactMetricModal({
     quantile: 0.5,
     ignoreZeros: false,
   };
-
-  const quantileMetricFlag = growthbook && growthbook.isOn("quantile-metrics");
-  const quantileMetricsAvailableForDatasource =
-    quantileMetricFlag && selectedDataSource?.properties?.hasQuantileTesting;
-  const hasQuantileMetricCommercialFeature =
-    quantileMetricFlag && hasCommercialFeature("quantile-metrics");
 
   const numeratorFactTable = getFactTableById(
     form.watch("numerator.factTableId")
@@ -624,16 +615,6 @@ export default function FactMetricModal({
                         <strong>Mean</strong> metrics calculate the average
                         value of a numeric column in a fact table.
                       </div>
-                      {quantileMetricFlag ? (
-                        <div className="mb-2">
-                          <strong>Quantile</strong> metrics calculate the value
-                          at a specific percentile of a numeric column in a fact
-                          table.
-                          {!quantileMetricsAvailableForDatasource
-                            ? " Quantile metrics are not available for MySQL data sources."
-                            : ""}
-                        </div>
-                      ) : null}
                       <div>
                         <strong>Ratio</strong> metrics allow you to calculate a
                         complex value by dividing two different numeric columns
@@ -647,9 +628,7 @@ export default function FactMetricModal({
             value={type}
             setValue={(type) => {
               if (
-                type === "quantile" &&
-                (!quantileMetricsAvailableForDatasource ||
-                  !hasQuantileMetricCommercialFeature)
+                type === "quantile"
               ) {
                 return;
               }
@@ -690,27 +669,6 @@ export default function FactMetricModal({
                 value: "mean",
                 label: "Mean",
               },
-              ...(quantileMetricFlag
-                ? [
-                    {
-                      value: "quantile",
-                      label: (
-                        <>
-                          <PremiumTooltip
-                            commercialFeature="quantile-metrics"
-                            body={
-                              !quantileMetricsAvailableForDatasource
-                                ? "Quantile metrics are not available for MySQL data sources"
-                                : ""
-                            }
-                          >
-                            Quantile
-                          </PremiumTooltip>
-                        </>
-                      ),
-                    },
-                  ]
-                : []),
               {
                 value: "ratio",
                 label: "Ratio",
