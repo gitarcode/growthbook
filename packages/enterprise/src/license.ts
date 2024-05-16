@@ -54,8 +54,7 @@ export type CommercialFeature =
   | "prerequisites"
   | "prerequisite-targeting"
   | "redirects"
-  | "multiple-sdk-webhooks"
-  | "quantile-metrics";
+  | "multiple-sdk-webhooks";
 export type CommercialFeaturesMap = Record<AccountPlan, Set<CommercialFeature>>;
 
 export interface LicenseInterface {
