@@ -171,7 +171,7 @@ export default function SDKConnectionForm({
   );
 
   const enableRemoteEval =
-    hasRemoteEvaluationFeature && !!gb?.isOn("remote-evaluation");
+    hasRemoteEvaluationFeature;
 
   const showVisualEditorSettings = latestSdkCapabilities.includes(
     "visualEditor"
@@ -868,58 +868,43 @@ export default function SDKConnectionForm({
                         </label>
                         <div className="row">
                           <div className="col d-flex align-items-center">
-                            {gb?.isOn("remote-evaluation") ? (
-                              <>
-                                <Toggle
-                                  id="remote-evaluation"
-                                  value={form.watch("remoteEvalEnabled")}
-                                  setValue={(val) =>
-                                    form.setValue("remoteEvalEnabled", val)
-                                  }
-                                  disabled={
-                                    !hasRemoteEvaluationFeature ||
-                                    !latestSdkCapabilities.includes(
-                                      "remoteEval"
-                                    )
-                                  }
-                                />
-                                {isCloud() ? (
-                                  <div className="alert alert-info mb-0 ml-3 py-1 px-2">
-                                    <FaExclamationCircle className="mr-1" />
-                                    Cloud customers must self-host a remote
-                                    evaluation service such as{" "}
-                                    <a
-                                      target="_blank"
-                                      href="https://github.com/growthbook/growthbook-proxy"
-                                      rel="noreferrer"
-                                    >
-                                      GrowthBook Proxy
-                                    </a>{" "}
-                                    or a CDN edge worker.
-                                  </div>
-                                ) : null}
-                              </>
-                            ) : (
-                              <>
-                                <Toggle
-                                  id="remote-evaluation"
-                                  value={false}
-                                  disabled={true}
-                                  setValue={() => {
-                                    return;
-                                  }}
-                                />
-                                <span className="text-muted ml-2">
-                                  Coming soon
-                                </span>
-                              </>
-                            )}
+                            {(
+                            <>
+                              <Toggle
+                                id="remote-evaluation"
+                                value={form.watch("remoteEvalEnabled")}
+                                setValue={(val) =>
+                                  form.setValue("remoteEvalEnabled", val)
+                                }
+                                disabled={
+                                  !hasRemoteEvaluationFeature ||
+                                  !latestSdkCapabilities.includes(
+                                    "remoteEval"
+                                  )
+                                }
+                              />
+                              {isCloud() ? (
+                                <div className="alert alert-info mb-0 ml-3 py-1 px-2">
+                                  <FaExclamationCircle className="mr-1" />
+                                  Cloud customers must self-host a remote
+                                  evaluation service such as{" "}
+                                  <a
+                                    target="_blank"
+                                    href="https://github.com/growthbook/growthbook-proxy"
+                                    rel="noreferrer"
+                                  >
+                                    GrowthBook Proxy
+                                  </a>{" "}
+                                  or a CDN edge worker.
+                                </div>
+                              ) : null}
+                            </>
+                          )}
                           </div>
                         </div>
                       </div>
                     </div>
-                    {gb?.isOn("remote-evaluation") &&
-                    !currentSdkCapabilities.includes("remoteEval") ? (
+                    {!currentSdkCapabilities.includes("remoteEval") ? (
                       <div
                         className="ml-2 mt-3 text-warning-orange"
                         style={{ marginBottom: -5 }}
