@@ -211,11 +211,10 @@ const navlinks: SidebarLinkProps[] = [
         name: "Import your data",
         href: "/importing",
         path: /^importing/,
-        filter: ({ permissions, permissionsUtils, gb }) =>
+        filter: ({ permissions, permissionsUtils }) =>
           permissions.check("manageFeatures", "") &&
           permissions.check("manageEnvironments" as GlobalPermission) &&
-          permissionsUtils.canCreateProjects() &&
-          !!gb?.isOn("import-from-x"),
+          permissionsUtils.canCreateProjects(),
       },
       {
         name: "Billing",
