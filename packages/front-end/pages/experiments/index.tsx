@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { RxDesktop } from "react-icons/rx";
 import { useRouter } from "next/router";
-import { useGrowthBook } from "@growthbook/growthbook-react";
 import { datetime, ago } from "shared/dates";
 import Link from "next/link";
 import { BsFlag } from "react-icons/bs";
@@ -21,9 +20,7 @@ import ExperimentsGetStarted from "@/components/HomePage/ExperimentsGetStarted";
 import SortedTags from "@/components/Tags/SortedTags";
 import Field from "@/components/Forms/Field";
 import Toggle from "@/components/Forms/Toggle";
-import AddExperimentModal from "@/components/Experiment/AddExperimentModal";
 import ImportExperimentModal from "@/components/Experiment/ImportExperimentModal";
-import { AppFeatures } from "@/types/app-features";
 import { useExperiments } from "@/hooks/useExperiments";
 import Tooltip from "@/components/Tooltip/Tooltip";
 import { useAuth } from "@/services/auth";
@@ -38,7 +35,6 @@ import { useLocalStorage } from "@/hooks/useLocalStorage";
 const NUM_PER_PAGE = 20;
 
 const ExperimentsPage = (): React.ReactElement => {
-  const growthbook = useGrowthBook<AppFeatures>();
 
   const {
     ready,
@@ -469,17 +465,12 @@ const ExperimentsPage = (): React.ReactElement => {
         </div>
       </div>
       {openNewExperimentModal &&
-        (growthbook?.isOn("new-experiment-modal") ? (
-          <AddExperimentModal
-            onClose={() => setOpenNewExperimentModal(false)}
-            source="experiment-list"
-          />
-        ) : (
-          <ImportExperimentModal
-            onClose={() => setOpenNewExperimentModal(false)}
-            source="experiment-list"
-          />
-        ))}
+        ((
+        <ImportExperimentModal
+          onClose={() => setOpenNewExperimentModal(false)}
+          source="experiment-list"
+        />
+      ))}
     </>
   );
 };
